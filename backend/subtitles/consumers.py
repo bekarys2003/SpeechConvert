@@ -5,23 +5,23 @@ import json
 import base64
 import tempfile
 import asyncio
-import openai
 import traceback
-from pydub import AudioSegment
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.conf import settings
 from transformers import pipeline
 from google.cloud import translate_v2 as translate
+from faster_whisper import WhisperModel
 
-# Initialize Hugging Face sentiment model once
 sentiment_model = pipeline(
     "text-classification",
     model="bhadresh-savani/distilbert-base-uncased-emotion",
     top_k=None
 )
 
-# Initialize Google Translate client once
 translator = translate.Client()
+
+
+whisper_model = WhisperModel("base", compute_type="auto")
 
 class SubtitleConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -32,13 +32,15 @@ class SubtitleConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         tmp_audio_path = None
-        converted_path = None
 
         try:
-            openai.api_key = settings.OPENAI_API_KEY
             data = json.loads(text_data)
 
             base64_audio = data.get("audio")
+            target_lang = data.get("lang", "ru")
+            allowed_langs = {"ru", "fr", "de", "es", "zh", "ja"}
+            if target_lang not in allowed_langs:
+                target_lang = "ru"
             if not base64_audio or "webm" not in base64_audio:
                 return
 
@@ -50,16 +52,11 @@ class SubtitleConsumer(AsyncWebsocketConsumer):
                 tmp_audio.write(audio_data)
                 tmp_audio_path = tmp_audio.name
 
-            with open(tmp_audio_path, "rb") as audio_file:
-                transcript_resp = openai.audio.transcriptions.create(
-                    file=audio_file,
-                    model="whisper-1"
-                )
-            transcript = transcript_resp.text
+            segments, _ = whisper_model.transcribe(tmp_audio_path)
+            transcript = " ".join([segment.text.strip() for segment in segments])
 
-            # ✅ Run translation and emotion detection in parallel
             async def run_translation():
-                return translator.translate(transcript, target_language='ru')['translatedText']
+                return translator.translate(transcript, target_language=target_lang)['translatedText']
 
             async def run_emotion():
                 result = sentiment_model(transcript)
@@ -78,6 +75,5 @@ class SubtitleConsumer(AsyncWebsocketConsumer):
             traceback.print_exc()
 
         finally:
-            for path in [tmp_audio_path, converted_path]:
-                if path and os.path.exists(path):
-                    os.remove(path)
+            if tmp_audio_path and os.path.exists(tmp_audio_path):
+                os.remove(tmp_audio_path)
