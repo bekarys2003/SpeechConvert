@@ -5,14 +5,10 @@ const AudioStreamer: React.FC = () => {
   const [transcript, setTranscript] = useState('');
   const [translation, setTranslation] = useState('');
   const [emotion, setEmotion] = useState('');
-  const lastChunkRef = useRef(''); // ✅ Track last transcript chunk
+  const lastChunkRef = useRef('');
 
   useEffect(() => {
     socketRef.current = new WebSocket('ws://localhost:8000/ws/subtitles/');
-
-    socketRef.current.onopen = () => {
-      console.log('✅ WebSocket connected');
-    };
 
     socketRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -21,63 +17,40 @@ const AudioStreamer: React.FC = () => {
         lastChunkRef.current = data.transcript;
         setTranscript((prev) => prev + ' ' + data.transcript);
       }
-
-      if (data.translation) {
-        setTranslation(data.translation);
-      }
-
-      if (data.emotion && data.emotion !== emotion) {
-        setEmotion(data.emotion);
-      }
+      if (data.translation) setTranslation(data.translation);
+      if (data.emotion && data.emotion !== emotion) setEmotion(data.emotion);
     };
 
-    socketRef.current.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
-
-    socketRef.current.onclose = () => {
-      console.log('❌ WebSocket closed');
-    };
-
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then((stream) => {
-        const mediaRecorder = new MediaRecorder(stream, {
-          mimeType: 'audio/webm;codecs=opus',
-        });
-
-        mediaRecorder.start(5000); // Capture chunks every 5 seconds
-
-        mediaRecorder.ondataavailable = (event) => {
-          const audioBlob = event.data;
-
-          if (audioBlob && audioBlob.size > 0) {
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-              const base64Audio = reader.result;
-              if (typeof base64Audio === 'string' && socketRef.current?.readyState === WebSocket.OPEN) {
-                socketRef.current.send(JSON.stringify({ audio: base64Audio }));
-              } else {
-                console.warn("⚠️ WebSocket is not open. Skipping audio chunk.");
-              }
-            };
-
-            reader.readAsDataURL(audioBlob);
-          }
-        };
-      })
-      .catch((err) => {
-        console.error("🎤 Microphone access error:", err);
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'audio/webm;codecs=opus',
       });
+
+      mediaRecorder.start(2000);
+
+      mediaRecorder.ondataavailable = (event) => {
+        const audioBlob = event.data;
+        if (audioBlob.size > 0) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64Audio = reader.result;
+            if (typeof base64Audio === 'string' && socketRef.current?.readyState === WebSocket.OPEN) {
+              socketRef.current.send(JSON.stringify({ audio: base64Audio }));
+            }
+          };
+          reader.readAsDataURL(audioBlob);
+        }
+      };
+    });
 
     return () => {
       socketRef.current?.close();
     };
-  }, [emotion]); // ✅ Re-render only when emotion changes
+  }, [emotion]);
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h2>🎤 Live Subtitles</h2>
+      <h2>Live Subtitles</h2>
       <div style={{
         background: '#f9f9f9',
         borderRadius: '8px',
@@ -85,9 +58,9 @@ const AudioStreamer: React.FC = () => {
         boxShadow: '0 0 5px rgba(0,0,0,0.1)',
         marginBottom: '1rem'
       }}>
-        <p><strong>🗣️ Transcript:</strong> {transcript.trim()}</p>
-        <p><strong>🌐 Translation:</strong> {translation}</p>
-        <p><strong>😐 Emotion:</strong> {emotion}</p>
+        <p><strong>Transcript:</strong> {transcript.trim()}</p>
+        <p><strong>Translation:</strong> {translation}</p>
+        <p><strong>Emotion:</strong> {emotion}</p>
       </div>
     </div>
   );
