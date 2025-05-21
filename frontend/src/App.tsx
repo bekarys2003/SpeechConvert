@@ -8,6 +8,7 @@ import { Home } from './components/Home';
 import './interceptors/axios';
 import { Forgot } from './components/Forgot';
 import { Reset } from './components/Reset';
+import AudioStreamer from "./components/AudioStreamer";
 
 function App() {
   return <BrowserRouter>
@@ -19,6 +20,7 @@ function App() {
       <Route path='/forgot' element={<Forgot/>} />
       <Route path='/reset/:token' element={<Reset/>} />
       <Route path="/" element={<Home />} />
+      <Route path="/sub" element={<AudioStreamer />} />
 
     </Routes>
   </BrowserRouter>

@@ -15,9 +15,9 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+OPENAI_API_KEY = config("OPENAI_API_KEY")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
@@ -39,8 +39,10 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'corsheaders',
+    'channels',
 
-    'accaunts'
+    'accaunts',
+
 ]
 
 CORS_ALLOWED_ORIGINS = [
