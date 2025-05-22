@@ -7,17 +7,22 @@ const AudioStreamer: React.FC = () => {
   const [language, setLanguage] = useState('ru');
   const [enableTranslation, setEnableTranslation] = useState(true);
   const [enableEmotion, setEnableEmotion] = useState(true);
-
   const [transcript, setTranscript] = useState('');
   const [translation, setTranslation] = useState('');
   const [emotion, setEmotion] = useState('');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const lastChunkRef = useRef('');
 
   useEffect(() => {
-    socketRef.current = new WebSocket('ws://localhost:8000/ws/subtitles/');
+    const socket = new WebSocket('ws://localhost:8000/ws/subtitles/');
+    socketRef.current = socket;
 
-    socketRef.current.onmessage = (event) => {
+    socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      if (data.error) {
+        alert(`Backend error: ${data.error}`);
+        return;
+      }
       if (data.transcript && data.transcript !== lastChunkRef.current) {
         lastChunkRef.current = data.transcript;
         setTranscript((prev) => prev + ' ' + data.transcript);
@@ -37,12 +42,8 @@ const AudioStreamer: React.FC = () => {
       setTranscript('');
       setTranslation('');
       setEmotion('');
-
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus',
-      });
-
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
       const chunks: Blob[] = [];
 
       mediaRecorder.ondataavailable = (event) => {
@@ -51,25 +52,42 @@ const AudioStreamer: React.FC = () => {
 
       mediaRecorder.onstop = () => {
         const fullBlob = new Blob(chunks, { type: 'audio/webm' });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64Audio = reader.result;
-          if (typeof base64Audio === 'string' && socketRef.current?.readyState === WebSocket.OPEN) {
-            socketRef.current.send(JSON.stringify({
-              audio: base64Audio,
-              lang: language,
-              translate: enableTranslation,
-              detectEmotion: enableEmotion
-            }));
-          }
-        };
-        reader.readAsDataURL(fullBlob);
+        sendBlobToSocket(fullBlob);
       };
 
       mediaRecorder.start();
       mediaRecorderRef.current = mediaRecorder;
       setRecording(true);
     }
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) setUploadedFile(file);
+  };
+
+  const handleSubmitFile = () => {
+    if (!uploadedFile) return;
+    setTranscript('');
+    setTranslation('');
+    setEmotion('');
+    sendBlobToSocket(uploadedFile);
+  };
+
+  const sendBlobToSocket = (blob: Blob) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64Audio = reader.result;
+      if (typeof base64Audio === 'string' && socketRef.current?.readyState === WebSocket.OPEN) {
+        socketRef.current.send(JSON.stringify({
+          audio: base64Audio,
+          lang: language,
+          translate: enableTranslation,
+          detectEmotion: enableEmotion
+        }));
+      }
+    };
+    reader.readAsDataURL(blob);
   };
 
   const downloadTranscript = () => {
@@ -88,11 +106,8 @@ const AudioStreamer: React.FC = () => {
 
       <label>
         Translate to:
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          style={{ marginLeft: '1rem', marginBottom: '1rem' }}
-        >
+        <select value={language} onChange={(e) => setLanguage(e.target.value)}
+                style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
           <option value="ru">Russian</option>
           <option value="fr">French</option>
           <option value="de">German</option>
@@ -104,52 +119,51 @@ const AudioStreamer: React.FC = () => {
 
       <div style={{ marginBottom: '1rem' }}>
         <label style={{ marginRight: '1rem' }}>
-          <input
-            type="checkbox"
-            checked={enableTranslation}
-            onChange={() => setEnableTranslation(prev => !prev)}
-          /> Enable Translation
+          <input type="checkbox" checked={enableTranslation}
+                 onChange={() => setEnableTranslation(prev => !prev)} /> Enable Translation
         </label>
         <label>
-          <input
-            type="checkbox"
-            checked={enableEmotion}
-            onChange={() => setEnableEmotion(prev => !prev)}
-          /> Enable Emotion Detection
+          <input type="checkbox" checked={enableEmotion}
+                 onChange={() => setEnableEmotion(prev => !prev)} /> Enable Emotion Detection
         </label>
       </div>
 
-      <button
-        onClick={toggleRecording}
-        style={{
+      <div style={{ marginBottom: '1rem' }}>
+        <button onClick={toggleRecording} style={{
           padding: '0.5rem 1rem',
           backgroundColor: recording ? 'red' : 'green',
-          color: 'white',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: 'pointer',
-          marginBottom: '1rem'
-        }}
-      >
-        {recording ? 'Stop Recording' : 'Start Recording'}
-      </button>
+          color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer'
+        }}>
+          {recording ? 'Stop Recording' : 'Start Recording'}
+        </button>
 
-      <button
-        onClick={downloadTranscript}
-        disabled={!transcript.trim()}
-        style={{
+        <button onClick={downloadTranscript} disabled={!transcript.trim()} style={{
           padding: '0.5rem 1rem',
           backgroundColor: '#555',
           color: 'white',
           border: 'none',
           borderRadius: '6px',
           cursor: transcript.trim() ? 'pointer' : 'not-allowed',
+          marginLeft: '1rem'
+        }}>
+          Download Transcript
+        </button>
+      </div>
+
+      <div style={{ marginBottom: '1rem' }}>
+        <input type="file" accept="audio/mp3,audio/mpeg,audio/*" onChange={handleFileUpload} />
+        <button onClick={handleSubmitFile} disabled={!uploadedFile} style={{
           marginLeft: '1rem',
-          marginBottom: '1rem'
-        }}
-      >
-        Download Transcript
-      </button>
+          padding: '0.5rem 1rem',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: uploadedFile ? 'pointer' : 'not-allowed'
+        }}>
+          Submit Audio File
+        </button>
+      </div>
 
       <div style={{
         background: '#f9f9f9',
