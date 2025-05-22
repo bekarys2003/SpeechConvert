@@ -28,7 +28,7 @@ export const Login = () => {
     }
 
     if (redirect){
-        return <Navigate to='/'/>
+        return <Navigate to='/sub'/>
     }
     const onSuccess = async (credentialResponse: any) => {
       console.log("Google Login Success:", credentialResponse);
