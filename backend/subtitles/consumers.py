@@ -12,15 +12,13 @@ from transformers import pipeline
 from google.cloud import translate_v2 as translate
 from faster_whisper import WhisperModel
 
+# Initialize models
 sentiment_model = pipeline(
     "text-classification",
     model="bhadresh-savani/distilbert-base-uncased-emotion",
     top_k=None
 )
-
 translator = translate.Client()
-
-
 whisper_model = WhisperModel("base", compute_type="auto")
 
 class SubtitleConsumer(AsyncWebsocketConsumer):
@@ -38,9 +36,13 @@ class SubtitleConsumer(AsyncWebsocketConsumer):
 
             base64_audio = data.get("audio")
             target_lang = data.get("lang", "ru")
+            do_translate = data.get("translate", True)
+            do_emotion = data.get("detectEmotion", True)
+
             allowed_langs = {"ru", "fr", "de", "es", "zh", "ja"}
             if target_lang not in allowed_langs:
                 target_lang = "ru"
+
             if not base64_audio or "webm" not in base64_audio:
                 return
 
@@ -52,23 +54,32 @@ class SubtitleConsumer(AsyncWebsocketConsumer):
                 tmp_audio.write(audio_data)
                 tmp_audio_path = tmp_audio.name
 
+            # Transcribe
             segments, _ = whisper_model.transcribe(tmp_audio_path)
             transcript = " ".join([segment.text.strip() for segment in segments])
 
-            async def run_translation():
-                return translator.translate(transcript, target_language=target_lang)['translatedText']
+            # Run selected tasks concurrently
+            tasks = []
+            if do_translate:
+                tasks.append(translator.translate(transcript, target_language=target_lang)['translatedText'])
+            if do_emotion:
+                emotion_task = asyncio.to_thread(sentiment_model, transcript)
+                tasks.append(emotion_task)
 
-            async def run_emotion():
-                result = sentiment_model(transcript)
-                return sorted(result[0], key=lambda x: x['score'], reverse=True)[0]['label']
+            results = await asyncio.gather(*tasks)
 
-            translation, top_emotion = await asyncio.gather(run_translation(), run_emotion())
+            response = {"transcript": transcript}
+            result_index = 0
 
-            await self.send(text_data=json.dumps({
-                "transcript": transcript,
-                "translation": translation,
-                "emotion": top_emotion
-            }))
+            if do_translate:
+                response["translation"] = results[result_index]
+                result_index += 1
+            if do_emotion:
+                emotions = results[result_index]
+                top_emotion = sorted(emotions[0], key=lambda x: x['score'], reverse=True)[0]['label']
+                response["emotion"] = top_emotion
+
+            await self.send(text_data=json.dumps(response))
 
         except Exception as e:
             await self.send(text_data=json.dumps({"error": str(e)}))
