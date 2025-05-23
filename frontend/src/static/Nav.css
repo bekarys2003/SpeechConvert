@@ -27,7 +27,8 @@
   .navbar-nav .nav-link {
     color: #ffffff;
     text-decoration: none;
-    font-size: 15px;
+    margin-top: 5px;
+    font-size: 19px;
     font-weight: 500;
     transition: color 0.2s ease-in-out;
   }
@@ -62,12 +63,14 @@
   }
 
   .btn-outline-primary:hover {
-    background-color: rgba(234, 234, 234, 0.1);
+    background-color: rgba(237, 237, 237);
+    border-color: #1c1c1b;
+    color: #1c1c1b;
   }
 
   /* Filled variant */
   .btn-primary {
-    background-color: #ffffff;
+    background-color: #e1e1d8;
     color: #001f24;
   }
 
@@ -76,7 +79,7 @@
   }
 
   /* Responsive stack */
-  @media (max-width: 768px) {
+  @media (max-width: 908px) {
     .navbar-header {
       flex-direction: column;
       align-items: flex-start;

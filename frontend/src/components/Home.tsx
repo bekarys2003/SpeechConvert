@@ -13,7 +13,7 @@ export const Home = () => {
         />
         <div className="hero-content">
           <h1 className="hero-title">SpeechConvert</h1>
-          <video className="hero-video" src="/nature.mp4" autoPlay muted loop></video>
+          <video className="hero-video" src="/nature.mp4" controls></video>
           <button className="hero-button">
             Try It Now
           </button>

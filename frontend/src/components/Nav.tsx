@@ -1,50 +1,59 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { setAuth } from "../redux/authSlice";
 import { RootState } from "../redux/store";
+import { setAuth } from "../redux/authSlice";
+import axios from "axios";
+import { useEffect } from "react";
 import "../static/Nav.css";
-
-type RefreshResponse = {
-  token: string;
-};
 
 export const Nav = () => {
   const auth = useSelector((state: RootState) => state.auth.value);
   const dispatch = useDispatch();
   const location = useLocation();
-  const [authChecked, setAuthChecked] = useState(false);
+  const isSub = location.pathname === "/sub";
 
+  // ✅ Check auth status on first load
   useEffect(() => {
     (async () => {
       try {
         await axios.get("user");
         dispatch(setAuth(true));
       } catch {
-        try {
-          const response = await axios.post<RefreshResponse>("refresh", {}, { withCredentials: true });
-          axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
-          await axios.get("user");
-          dispatch(setAuth(true));
-        } catch {
-          dispatch(setAuth(false));
-        }
+        dispatch(setAuth(false));
       }
-      setAuthChecked(true);
     })();
   }, [dispatch]);
 
   const logout = async () => {
-    await axios.post("logout", {}, { withCredentials: true });
+    await axios.post("logout");
     axios.defaults.headers.common["Authorization"] = "";
     dispatch(setAuth(false));
   };
 
-  if (!authChecked) return null;
+  // ✅ Define links based on auth
+  let links;
+  if (auth) {
+    links = (
+      <div>
+        <button className="btn btn-outline-primary" onClick={logout}>
+          Logout
+        </button>
+      </div>
+    );
+  } else {
+    links = !isSub && (
+      <>
+        <Link to="/login" className="btn btn-outline-primary">
+          Login
+        </Link>
+        <Link to="/register" className="btn btn-primary">
+          Register
+        </Link>
+      </>
+    );
+  }
 
-  const isSub = location.pathname === "/sub";
-
+  // ✅ Return JSX with injected links
   return (
     <div className="navbar-container">
       <header className="navbar-header">
@@ -52,25 +61,18 @@ export const Nav = () => {
           {!isSub && (
             <ul className="navbar-nav">
               <li>
-                <Link to="/" className="nav-link">Home</Link>
+                <Link to="/" className="nav-link">
+                  <img
+                    src="/logo.png"
+                    style={{ height: "4vh", marginRight: "8px" }}
+                  />
+                  SpeechConvert
+                </Link>
               </li>
             </ul>
           )}
         </div>
-        <div className="navbar-right">
-          {auth ? (
-            <Link to="/login" className="btn btn-outline-primary" onClick={logout}>
-              Logout
-            </Link>
-          ) : (
-            !isSub && (
-              <>
-                <Link to="/login" className="btn btn-outline-primary">Login</Link>
-                <Link to="/register" className="btn btn-primary">Register</Link>
-              </>
-            )
-          )}
-        </div>
+        <div className="navbar-right">{links}</div>
       </header>
     </div>
   );
