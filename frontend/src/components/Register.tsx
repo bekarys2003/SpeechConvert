@@ -1,70 +1,66 @@
-import React, { SyntheticEvent, useState } from "react"
-import axios from 'axios';
+import React, { SyntheticEvent, useState } from "react";
 import { Navigate } from "react-router-dom";
-
+import axios from "axios";
+import "../static/Login.css";
 
 export const Register = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordConfirm, setPasswordConfirm] = useState('');
-    const [redirect, setRedirect] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [redirect, setRedirect] = useState(false);
 
+  const submit = async (e: SyntheticEvent) => {
+    e.preventDefault();
 
-    const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();
+    await axios.post('register', {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password,
+      password_confirm: passwordConfirm
+    });
 
-        await axios.post('http://127.0.0.1:8000/api/register', {
-            first_name: firstName,
-            last_name: lastName,
-            email,
-            password,
-            password_confirm: passwordConfirm
-        });
-        setRedirect(true);
-    }
+    setRedirect(true);
+  }
 
-    if (redirect){
-        return <Navigate to='/login'/>
-    }
+  if (redirect) {
+    return <Navigate to='/login' />;
+  }
 
-    return <main className="form-signin w-100 m-auto">
-    <form onSubmit={submit}>
-      <h1 className="h3 mb-3 fw-normal">Please register</h1>
+  return (
+    <main className="login-container">
+      <form className="login-form" onSubmit={submit}>
+        <h1 className="login-title">Register</h1>
 
-      <div className="form-floating">
-        <input className="form-control" id="floatingInput" placeholder="First Name"
-            onChange={e => setFirstName(e.target.value)}
-        />
-        <label htmlFor="floatingInput">First Name</label>
-      </div>
-      <div className="form-floating">
-        <input className="form-control" id="floatingInput" placeholder="Last Name"
-            onChange={e => setLastName(e.target.value)}
-        />
-        <label htmlFor="floatingInput">Last Name</label>
-      </div>
-      <div className="form-floating">
-        <input type="email" className="form-control" id="floatingInput" placeholder="name@example.com"
-            onChange={e => setEmail(e.target.value)}
-        />
-        <label htmlFor="floatingInput">Email address</label>
-      </div>
-      <div className="form-floating">
-        <input type="password" className="form-control" id="floatingPassword" placeholder="Password"
-            onChange={e => setPassword(e.target.value)}
-        />
-        <label htmlFor="floatingPassword">Password</label>
-      </div>
-      <div className="form-floating">
-        <input className="form-control" id="floatingInput" placeholder="Password Confirm"
-            onChange={e => setPasswordConfirm(e.target.value)}
-        />
-        <label htmlFor="floatingInput">Password Confirm</label>
-      </div>
+        <div className="form-group">
+          <label className="form-label">First Name</label>
+          <input className="form-input" placeholder="First Name" onChange={e => setFirstName(e.target.value)} />
+        </div>
 
-      <button className="btn btn-primary w-100 py-2" type="submit">Submit</button>
-    </form>
-  </main>
-}
+        <div className="form-group">
+          <label className="form-label">Last Name</label>
+          <input className="form-input" placeholder="Last Name" onChange={e => setLastName(e.target.value)} />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Email</label>
+          <input type="email" className="form-input" placeholder="name@example.com" onChange={e => setEmail(e.target.value)} />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Password</label>
+          <input type="password" className="form-input" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Confirm Password</label>
+          <input type="password" className="form-input" placeholder="Confirm Password" onChange={e => setPasswordConfirm(e.target.value)} />
+        </div>
+
+        <button className="submit-button" type="submit">Submit</button>
+      </form>
+    </main>
+  );
+};

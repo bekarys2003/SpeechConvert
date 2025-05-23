@@ -66,7 +66,7 @@ export const Nav = () => {
                     src="/logo.png"
                     style={{ height: "4vh", marginRight: "8px" }}
                   />
-                  SpeechConvert
+                   <span className="logo-text">SpeechConvert</span>
                 </Link>
               </li>
             </ul>

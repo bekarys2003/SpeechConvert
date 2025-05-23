@@ -97,22 +97,21 @@
   .google-login {
     margin-top: 1.5rem;
     text-align: center;
-    border-radius: 9999px;
   }
 
   /* Responsive adjustments */
   @media (max-width: 1080px) {
     .login-container {
-        align-items: flex-start; /* Move content to top */
-        padding-top: 3rem;       /* Add top spacing */
-      }
-
-      .login-form {
-        padding: 1.5rem 1rem; /* Reduce padding for smaller screens */
-        margin-top: 0;        /* Prevent unnecessary vertical shift */
-      }
-
-      .login-title {
-        font-size: 1.75rem;
-      }
+      align-items: flex-start;
+      padding-top: 3rem;
     }
+
+    .login-form {
+      padding: 1.5rem 1rem;
+      margin-top: 0;
+    }
+
+    .login-title {
+      font-size: 1.75rem;
+    }
+  }
