@@ -1,7 +1,6 @@
 import React from "react";
 import "../static/Home.css";
 
-
 export const Home = () => {
   return (
     <div className="home-container">
@@ -12,49 +11,58 @@ export const Home = () => {
           alt="Hero Background"
           className="hero-background"
         />
-        <h1 className="hero-title">Speak Freely.</h1>
-        <video className="hero-video" src="/nature.mp4" autoPlay muted loop></video>
-
-        <button className="hero-button">
-          Try It Now
-        </button>
+        <div className="hero-content">
+          <h1 className="hero-title">SpeechConvert</h1>
+          <video className="hero-video" src="/nature.mp4" autoPlay muted loop></video>
+          <button className="hero-button">
+            Try It Now
+          </button>
+        </div>
       </section>
 
       {/* About Section */}
       <section className="about-section">
-        <h2 className="about-title">Why This App Matters</h2>
-        <div className="about-grid">
-          <div>
-            <h3 className="about-item-title">1. Accessibility for Everyone</h3>
-            <p className="about-item-text">Brings speech to text for the hearing impaired and supports multi-language communication for global inclusivity.</p>
-          </div>
-          <div>
-            <h3 className="about-item-title">2. Instant Emotional Insight</h3>
-            <p className="about-item-text">Understand the emotional tone behind conversations with cutting-edge sentiment analysis.</p>
-          </div>
-          <div>
-            <h3 className="about-item-title">3. Global Translation</h3>
-            <p className="about-item-text">Translates speech in real-time into multiple languages to bridge communication gaps.</p>
-          </div>
-          <div>
-            <h3 className="about-item-title">4. Perfect for Live Content</h3>
-            <p className="about-item-text">Use it in podcasts, webinars, or live interviews for accurate and instant subtitle delivery.</p>
-          </div>
-          <div>
-            <h3 className="about-item-title">5. AI-Powered Simplicity</h3>
-            <p className="about-item-text">All features are powered by AI, wrapped in a simple and beautiful interface anyone can use.</p>
-          </div>
-        </div>
-      </section>
+  <h2 className="about-title">About</h2>
+
+  <div className="about-item reverse">
+    <img src="/first.png" alt="Accessibility" className="about-img" />
+    <div className="about-text">
+      <h3 className="about-item-title">Inclusive Communication</h3>
+      <p className="about-item-text">
+      Converts speech to text in real-time, empowering those with hearing loss
+      </p>
+    </div>
+  </div>
+
+  <div className="about-item">
+  <img src="/second.png" alt="Emotion Detection" className="about-img" />
+
+    <div className="about-text">
+      <h3 className="about-item-title">Upload Audio Files</h3>
+      <p className="about-item-text">
+      Effortlessly upload audio files and get instant transcription, translation, and emotion analysis — all in one place.
+      </p>
+    </div>
+  </div>
+
+  <div className="about-item reverse">
+    <img src="/third.png" alt="Translation" className="about-img" />
+    <div className="about-text">
+      <h3 className="about-item-title">Immediate Translation</h3>
+      <p className="about-item-text">
+      Break language barriers with real-time speech translation, making conversations seamless across cultures.      </p>
+    </div>
+  </div>
+</section>
+
 
       {/* Call to Action */}
       <section className="cta-section">
         <h2 className="cta-title">Start using it in seconds</h2>
-        <p className="cta-subtitle">No setup required. Just hit record and experience the future of voice interaction.</p>
         <button className="cta-button">
           Get Started
         </button>
       </section>
     </div>
   );
-}
+};
