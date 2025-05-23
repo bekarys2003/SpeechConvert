@@ -1,0 +1,92 @@
+/* Root container */
+.navbar-container {
+    background-color: #201f1f; /* Dark, sleek background */
+    padding: 0 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* Navbar layout */
+  .navbar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Left: nav links */
+  .navbar-left .navbar-nav {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Nav link */
+  .navbar-nav .nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+  }
+
+  .navbar-nav .nav-link:hover {
+    color: #4f4f4f;
+  }
+
+  /* Right: auth buttons */
+  .navbar-right {
+    display: flex;
+    gap: 1rem;
+  }
+
+  /* Button base style */
+  .btn {
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 0.4rem 1.2rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+  }
+
+  /* Outline variant */
+  .btn-outline-primary {
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: rgba(234, 234, 234, 0.1);
+  }
+
+  /* Filled variant */
+  .btn-primary {
+    background-color: #ffffff;
+    color: #001f24;
+  }
+
+  .btn-primary:hover {
+    background-color: #303030;
+  }
+
+  /* Responsive stack */
+  @media (max-width: 768px) {
+    .navbar-header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .navbar-right {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }

@@ -1,39 +1,60 @@
-import axios from "axios";
-import { useEffect, useState } from "react"
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { setAuth } from "../redux/authSlice";
-import { RootState } from "../redux/store";
+import React from "react";
+import "../static/Home.css";
 
-
-type User = {
-    first_name: string;
-    last_name: string;
-};
 
 export const Home = () => {
-    const dispatch = useDispatch();
-    const [message, setMessage] = useState('');
-    const auth = useSelector((state: RootState) => state.auth.value);
+  return (
+    <div className="home-container">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <img
+          src="/hero.jpg"
+          alt="Hero Background"
+          className="hero-background"
+        />
+        <h1 className="hero-title">Speak Freely.</h1>
+        <video className="hero-video" src="/nature.mp4" autoPlay muted loop></video>
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const { data } = await axios.get<User>('user');
+        <button className="hero-button">
+          Try It Now
+        </button>
+      </section>
 
-                setMessage(`Hi ${data.first_name} ${data.last_name}`);
-                dispatch(setAuth(true));
-            } catch (error) {
-                setMessage('You are not logged in');
-                dispatch(setAuth(false));
-            }
-        })()
-    }, []);
+      {/* About Section */}
+      <section className="about-section">
+        <h2 className="about-title">Why This App Matters</h2>
+        <div className="about-grid">
+          <div>
+            <h3 className="about-item-title">1. Accessibility for Everyone</h3>
+            <p className="about-item-text">Brings speech to text for the hearing impaired and supports multi-language communication for global inclusivity.</p>
+          </div>
+          <div>
+            <h3 className="about-item-title">2. Instant Emotional Insight</h3>
+            <p className="about-item-text">Understand the emotional tone behind conversations with cutting-edge sentiment analysis.</p>
+          </div>
+          <div>
+            <h3 className="about-item-title">3. Global Translation</h3>
+            <p className="about-item-text">Translates speech in real-time into multiple languages to bridge communication gaps.</p>
+          </div>
+          <div>
+            <h3 className="about-item-title">4. Perfect for Live Content</h3>
+            <p className="about-item-text">Use it in podcasts, webinars, or live interviews for accurate and instant subtitle delivery.</p>
+          </div>
+          <div>
+            <h3 className="about-item-title">5. AI-Powered Simplicity</h3>
+            <p className="about-item-text">All features are powered by AI, wrapped in a simple and beautiful interface anyone can use.</p>
+          </div>
+        </div>
+      </section>
 
-    return <div className="container mt-5 text-center">
-        <h3>
-            {auth ? message : 'You are not logged in'}
-        </h3>
+      {/* Call to Action */}
+      <section className="cta-section">
+        <h2 className="cta-title">Start using it in seconds</h2>
+        <p className="cta-subtitle">No setup required. Just hit record and experience the future of voice interaction.</p>
+        <button className="cta-button">
+          Get Started
+        </button>
+      </section>
     </div>
-
+  );
 }

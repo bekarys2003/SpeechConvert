@@ -1,0 +1,151 @@
+/* General container */
+.home-container {
+    background-color: black;
+    color: black;
+    font-family: sans-serif;
+    min-height: 100vh;
+  }
+
+  /* Hero Section */
+  .hero-section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end; /* Changed from center to right-align content */
+    text-align: right; /* Align text to the right */
+    padding: 0 3rem;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.hero-title {
+    color: #f1f1f1;
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+    z-index: 2;
+}
+
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: 4.5rem;
+    }
+}
+
+.hero-subtitle {
+    font-size: 1.125rem;
+    max-width: 40rem;
+    color: #f1f1f1;
+    margin-bottom: 2rem;
+    z-index: 2;
+}
+
+.hero-button {
+    background-color: black;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+    z-index: 2;
+}
+
+  .hero-button:hover {
+    opacity: 0.8;
+  }
+
+  /* About Section */
+  .about-section {
+    background-color: #f3f4f6;
+    padding: 5rem 1.5rem;
+    text-align: center;
+  }
+
+  .about-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .about-title {
+      font-size: 3rem;
+    }
+  }
+
+  .hero-video {
+    width: 35vw;
+    height: 35vh;
+    margin-bottom: 2rem;
+    z-index: 2;
+    }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    max-width: 80rem;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  @media (min-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .about-item-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .about-item-text {
+    color: #4b5563;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    padding: 4rem 1.5rem;
+    text-align: center;
+  }
+
+  .cta-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .cta-subtitle {
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+  }
+
+  .cta-button {
+    background-color: black;
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .cta-button:hover {
+    opacity: 0.8;
+  }
