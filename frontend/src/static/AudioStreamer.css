@@ -301,6 +301,8 @@ input::file-selector-button:focus {
   background-color: #222;
 }
 
+
+
 /* Responsive Tweaks */
 @media (max-width: 640px) {
   .controls-container {
@@ -365,8 +367,8 @@ h6{
 }
 
 .file-container {
+  max-height: 199.2px;
   width: 100%;
-  max-width: 850px;
   padding: 20px;
   background: #111;
   border-radius: 20px;
