@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
+import '../static/AudioStreamer.css';
+import { Mic, Download } from 'lucide-react';
 
 const AudioStreamer: React.FC = () => {
   const socketRef = useRef<WebSocket | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
   const [recording, setRecording] = useState(false);
+  const [circleScale, setCircleScale] = useState(1);
+
   const [language, setLanguage] = useState('ru');
   const [enableTranslation, setEnableTranslation] = useState(true);
   const [enableEmotion, setEnableEmotion] = useState(true);
@@ -37,12 +43,34 @@ const AudioStreamer: React.FC = () => {
   const toggleRecording = async () => {
     if (recording) {
       mediaRecorderRef.current?.stop();
+      audioContextRef.current?.close();
       setRecording(false);
     } else {
       setTranscript('');
       setTranslation('');
       setEmotion('');
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const audioContext = new AudioContext();
+      audioContextRef.current = audioContext;
+
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 512;
+      analyserRef.current = analyser;
+      source.connect(analyser);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      const animate = () => {
+        if (!recording || !analyser) return;
+        analyser.getByteFrequencyData(dataArray);
+        const volume = dataArray.reduce((sum, val) => sum + val, 0) / dataArray.length;
+        setCircleScale(1 + volume / 200);
+        requestAnimationFrame(animate);
+      };
+      animate();
+
       const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
       const chunks: Blob[] = [];
 
@@ -101,76 +129,99 @@ const AudioStreamer: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h2>🎤 Live Subtitles</h2>
+    <div className="audio-container">
+      <h2>SpeechConvert</h2>
 
-      <label>
-        Translate to:
-        <select value={language} onChange={(e) => setLanguage(e.target.value)}
-                style={{ marginLeft: '1rem', marginBottom: '1rem' }}>
-          <option value="ru">Russian</option>
-          <option value="fr">French</option>
-          <option value="de">German</option>
-          <option value="es">Spanish</option>
-          <option value="zh">Chinese</option>
-          <option value="ja">Japanese</option>
-        </select>
-      </label>
+      <div className="controls-container">
+        <div className="side-options">
+          <div className="settings-container">
+            <div className="checkbox-group">
+              <label className="checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  checked={enableTranslation}
+                  onChange={() => setEnableTranslation(prev => !prev)}
+                />
+                <span className="custom-checkbox"></span>
+                Translation
+              </label>
+              <label className="checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  checked={enableEmotion}
+                  onChange={() => setEnableEmotion(prev => !prev)}
+                />
+                <span className="custom-checkbox"></span>
+                Emotion Detection
+              </label>
+            </div>
+            {enableTranslation && (
+              <label className="language-select">
+                Translate to:
+                <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+                  <option value="kk">Kazakh</option>
+                  <option value="ru">Russian</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                  <option value="es">Spanish</option>
+                  <option value="zh">Chinese</option>
+                  <option value="ja">Japanese</option>
+                </select>
+              </label>
+            )}
+          </div>
+          <button className="download-button" onClick={downloadTranscript} disabled={!transcript.trim()}>
+            Download Transcript
+          </button>
+        </div>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ marginRight: '1rem' }}>
-          <input type="checkbox" checked={enableTranslation}
-                 onChange={() => setEnableTranslation(prev => !prev)} /> Enable Translation
-        </label>
-        <label>
-          <input type="checkbox" checked={enableEmotion}
-                 onChange={() => setEnableEmotion(prev => !prev)} /> Enable Emotion Detection
-        </label>
+        <div className="recording-column">
+          <button
+            onClick={toggleRecording}
+            className={`circle-button ${recording ? 'recording' : ''}`}
+            style={{ transform: `scale(${circleScale})` }}
+          >
+            {recording ? 'Stop' : <Mic size={'40px'} />}
+          </button>
+        </div>
+
+        <div className="upload-box">
+          <div className="file-container">
+            <h6>Upload your File</h6>
+            <div
+              className="drag-area"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files?.[0];
+                if (file) setUploadedFile(file);
+              }}
+              onClick={() => document.getElementById('fileUpload')?.click()}
+            >
+              <div className="icon"><Download size={24} /></div>
+              <span className="header">Drag & Drop</span>
+              <span className="header">or <span className="button">Browse</span></span>
+              <span className="support">Supports: MP3, WAV, WEBM</span>
+            </div>
+            <input
+              id="fileUpload"
+              className="file-hidden"
+              type="file"
+              accept="audio/*"
+              onChange={handleFileUpload}
+            />
+          </div>
+          <button
+            onClick={handleSubmitFile}
+            disabled={!uploadedFile}
+            className="submit-audio-button"
+          >
+            Submit Audio
+          </button>
+        </div>
       </div>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <button onClick={toggleRecording} style={{
-          padding: '0.5rem 1rem',
-          backgroundColor: recording ? 'red' : 'green',
-          color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer'
-        }}>
-          {recording ? 'Stop Recording' : 'Start Recording'}
-        </button>
-
-        <button onClick={downloadTranscript} disabled={!transcript.trim()} style={{
-          padding: '0.5rem 1rem',
-          backgroundColor: '#555',
-          color: 'white',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: transcript.trim() ? 'pointer' : 'not-allowed',
-          marginLeft: '1rem'
-        }}>
-          Download Transcript
-        </button>
-      </div>
-
-      <div style={{ marginBottom: '1rem' }}>
-        <input type="file" accept="audio/mp3,audio/mpeg,audio/*" onChange={handleFileUpload} />
-        <button onClick={handleSubmitFile} disabled={!uploadedFile} style={{
-          marginLeft: '1rem',
-          padding: '0.5rem 1rem',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: uploadedFile ? 'pointer' : 'not-allowed'
-        }}>
-          Submit Audio File
-        </button>
-      </div>
-
-      <div style={{
-        background: '#f9f9f9',
-        borderRadius: '8px',
-        padding: '1rem',
-        boxShadow: '0 0 5px rgba(0,0,0,0.1)'
-      }}>
+      <div className="transcript-box">
         <p><strong>Transcript:</strong> {transcript.trim()}</p>
         {enableTranslation && <p><strong>Translation:</strong> {translation}</p>}
         {enableEmotion && <p><strong>Emotion:</strong> {emotion}</p>}
