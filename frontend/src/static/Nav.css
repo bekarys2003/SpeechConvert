@@ -79,48 +79,6 @@
   }
 
   /* Responsive stack */
-  @media (max-width: 1080px) {
-    .navbar-header {
-      flex-direction: row; /* Keep items in a row */
-      align-items: center;
-      justify-content: space-between; /* Push logo left, buttons right */
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-
-    .navbar-left .navbar-nav {
-      flex-direction: row; /* Keep nav horizontal */
-      gap: 1rem;
-    }
-
-    .navbar-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .navbar-right .btn {
-      margin-left: 0; /* Reset auto margin */
-      font-size: 20px;
-    }
-    .logo-text {
-        display: none;
-      }
-  }
+  /*  */
 
   /* Mobile adjustments */
-  @media (max-width: 480px) {
-    .navbar-header {
-      padding: 1rem;
-      height: auto;
-    }
-
-    .navbar-nav .nav-link {
-      font-size: 16px;
-    }
-
-    .btn {
-      font-size: 13px;
-      padding: 0.3rem 1rem;
-    }
-  }

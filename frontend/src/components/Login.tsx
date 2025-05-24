@@ -2,7 +2,7 @@ import React, { SyntheticEvent, useState } from "react"
 import axios from 'axios';
 import { Link, Navigate } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-
+import styles from './Login.module.css';
 import '../static/Login.css';
 
 type LoginResponse = {
@@ -54,7 +54,7 @@ export const Login = () => {
     }
 
     return (
-        <main className="login-container">
+        <div className="login-container">
             <form className="login-form" onSubmit={submit}>
                 <h1 className="login-title">Sign In</h1>
                 <div className="form-group">
@@ -75,6 +75,6 @@ export const Login = () => {
                     <GoogleLogin onSuccess={onSuccess} onError={onError} />
                 </div>
             </form>
-        </main>
+        </div>
     )
 }

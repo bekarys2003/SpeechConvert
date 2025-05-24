@@ -150,6 +150,8 @@ const AudioStreamer: React.FC = () => {
     <div className="audio-container">
       <h2>SpeechConvert</h2>
 
+
+
       <div className="controls-container">
         <div className="side-options">
           <div className="settings-container">
@@ -182,7 +184,6 @@ const AudioStreamer: React.FC = () => {
             Download Transcript
           </button>
         </div>
-
         <div className="recording-column">
           <AudioCircle recording={recording} onClick={toggleRecording} />
         </div>
