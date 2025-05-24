@@ -88,7 +88,7 @@ h2 {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: transform 0.1s ease-in-out, background-color 0.3s ease;
   box-shadow: 0 4px 12px rgba(255, 47, 0, 0.2);
 }
 

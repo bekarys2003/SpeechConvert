@@ -1,15 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../static/AudioStreamer.css';
-import { Mic, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
+import AudioCircle from './AudioCircle';
 
 const AudioStreamer: React.FC = () => {
-  const socketRef = useRef<WebSocket | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
   const [recording, setRecording] = useState(false);
-  const [circleScale, setCircleScale] = useState(1);
-
+  const socketRef = useRef<WebSocket | null>(null);
   const [language, setLanguage] = useState('ru');
   const [enableTranslation, setEnableTranslation] = useState(true);
   const [enableEmotion, setEnableEmotion] = useState(true);
@@ -18,6 +17,45 @@ const AudioStreamer: React.FC = () => {
   const [emotion, setEmotion] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const lastChunkRef = useRef('');
+
+  const toggleRecording = async () => {
+    if (recording) {
+      mediaRecorderRef.current?.stop();
+      audioContextRef.current?.close();
+      setRecording(false);
+    } else {
+      setTranscript('');
+      setTranslation('');
+      setEmotion('');
+      setRecording(true);
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const audioContext = new AudioContext();
+      audioContextRef.current = audioContext;
+
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 512;
+      analyserRef.current = analyser;
+      source.connect(analyser);
+
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+      const chunks: Blob[] = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) chunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const fullBlob = new Blob(chunks, { type: 'audio/webm' });
+        sendBlobToSocket(fullBlob);
+      };
+
+      mediaRecorder.start();
+      mediaRecorderRef.current = mediaRecorder;
+    }
+  };
 
   useEffect(() => {
     const socket = new WebSocket('ws://localhost:8000/ws/subtitles/');
@@ -39,55 +77,6 @@ const AudioStreamer: React.FC = () => {
 
     return () => socketRef.current?.close();
   }, [emotion]);
-
-  const toggleRecording = async () => {
-    if (recording) {
-      mediaRecorderRef.current?.stop();
-      audioContextRef.current?.close();
-      setRecording(false);
-    } else {
-      setTranscript('');
-      setTranslation('');
-      setEmotion('');
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-      const audioContext = new AudioContext();
-      audioContextRef.current = audioContext;
-
-      const source = audioContext.createMediaStreamSource(stream);
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 512;
-      analyserRef.current = analyser;
-      source.connect(analyser);
-
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-      const animate = () => {
-        if (!recording || !analyser) return;
-        analyser.getByteFrequencyData(dataArray);
-        const volume = dataArray.reduce((sum, val) => sum + val, 0) / dataArray.length;
-        setCircleScale(1 + volume / 200);
-        requestAnimationFrame(animate);
-      };
-      animate();
-
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
-      const chunks: Blob[] = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) chunks.push(event.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        const fullBlob = new Blob(chunks, { type: 'audio/webm' });
-        sendBlobToSocket(fullBlob);
-      };
-
-      mediaRecorder.start();
-      mediaRecorderRef.current = mediaRecorder;
-      setRecording(true);
-    }
-  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -174,15 +163,11 @@ const AudioStreamer: React.FC = () => {
             Download Transcript
           </button>
         </div>
-
         <div className="recording-column">
-          <button
+          <AudioCircle
+            recording={recording}
             onClick={toggleRecording}
-            className={`circle-button ${recording ? 'recording' : ''}`}
-            style={{ transform: `scale(${circleScale})` }}
-          >
-            {recording ? 'Stop' : <Mic size={'40px'} />}
-          </button>
+          />
         </div>
 
         <div className="upload-box">
