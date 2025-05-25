@@ -12,7 +12,6 @@ import AudioStreamer from "./components/AudioStreamer";
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setAuth } from './redux/authSlice';
-import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
 
@@ -29,9 +28,7 @@ function App() {
         <Route
           path="/sub"
           element={
-            <PrivateRoute>
               <AudioStreamer />
-            </PrivateRoute>
           }
         />
       </Routes>
