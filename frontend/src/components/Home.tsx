@@ -1,7 +1,13 @@
 import React from "react";
 import "../static/Home.css";
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
+  const navigate = useNavigate();
+
+    const handleClick = () => {
+    navigate('/sub');
+    };
   return (
     <div className="home-container">
       {/* Hero Section */}
@@ -14,7 +20,7 @@ export const Home = () => {
         <div className="hero-content">
           <h1 className="hero-title">SpeechConvert</h1>
           <video className="hero-video" src="/nature.mp4" controls></video>
-          <button className="hero-button">
+          <button className="hero-button" onClick={handleClick}>
             Try It Now
           </button>
         </div>
@@ -59,7 +65,7 @@ export const Home = () => {
       {/* Call to Action */}
       <section className="cta-section">
         <h2 className="cta-title">Start using it in seconds</h2>
-        <button className="cta-button">
+        <button className="cta-button" onClick={handleClick}>
           Get Started
         </button>
       </section>

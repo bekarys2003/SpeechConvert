@@ -12,6 +12,7 @@ import AudioStreamer from "./components/AudioStreamer";
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setAuth } from './redux/authSlice';
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
 
@@ -25,7 +26,14 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot" element={<Forgot />} />
         <Route path="/reset/:token" element={<Reset />} />
-        <Route path="/sub" element={<AudioStreamer />} />
+        <Route
+          path="/sub"
+          element={
+            <PrivateRoute>
+              <AudioStreamer />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

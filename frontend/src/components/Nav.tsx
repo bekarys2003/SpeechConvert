@@ -12,7 +12,7 @@ export const Nav = () => {
   const location = useLocation();
   const isSub = location.pathname === "/sub";
 
-  // ✅ Check auth status on first load
+
   useEffect(() => {
     (async () => {
       try {
@@ -26,9 +26,14 @@ export const Nav = () => {
 
   const logout = async () => {
     await axios.post("logout");
-    axios.defaults.headers.common["Authorization"] = "";
+    delete axios.defaults.headers.common["Authorization"];
+      localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+
     dispatch(setAuth(false));
+    window.location.href = "/login"; // ✅ full reload to prevent token reuse
   };
+
 
   // ✅ Define links based on auth
   let links;
@@ -40,8 +45,8 @@ export const Nav = () => {
         </button>
       </div>
     );
-  } else {
-    links = !isSub && (
+  } else if(!auth){
+    links =(
       <>
         <Link to="/login" className="btn btn-outline-primary">
           Login
@@ -51,6 +56,9 @@ export const Nav = () => {
         </Link>
       </>
     );
+  }else {
+    // ✅ Authenticated but not on /sub — show nothing
+    links = null;
   }
 
   // ✅ Return JSX with injected links
@@ -58,7 +66,6 @@ export const Nav = () => {
     <div className="navbar-container">
       <header className="navbar-header">
         <div className="navbar-left">
-          {!isSub && (
             <ul className="navbar-nav">
               <li>
                 <Link to="/" className="nav-link">
@@ -70,7 +77,7 @@ export const Nav = () => {
                 </Link>
               </li>
             </ul>
-          )}
+
         </div>
         <div className="navbar-right">{links}</div>
       </header>

@@ -4,28 +4,33 @@ import { Link, Navigate } from "react-router-dom";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import styles from './Login.module.css';
 import '../static/Login.css';
+import { useDispatch } from "react-redux";
+import { setAuth } from "../redux/authSlice";
 
 type LoginResponse = {
     token: string;
 };
 
 export const Login = () => {
+    const dispatch = useDispatch();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
 
     const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();
+      e.preventDefault();
 
-        const {data} = await axios.post<LoginResponse>('login', {
-            email,
-            password,
-        }, {withCredentials: true});
+      const { data } = await axios.post<LoginResponse>('login', {
+        email,
+        password,
+      }, { withCredentials: true });
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
-        setRedirect(true);
-    }
+      dispatch(setAuth(true));
+      setRedirect(true);
+    };
+
 
     if (redirect){
         return <Navigate to='/sub'/>
