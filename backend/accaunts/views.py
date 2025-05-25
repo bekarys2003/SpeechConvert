@@ -185,7 +185,7 @@ class GoogleAuthAPIView(APIView):
         )
 
         response = Response({
-            'token': access_token  # ✅ Return JSON with token here!
+            'token': access_token
         })
         response.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
         return response

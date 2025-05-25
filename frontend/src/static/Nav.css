@@ -1,84 +1,80 @@
 /* Root container */
 .navbar-container {
-    background-color: #201f1f; /* Dark, sleek background */
+    background-color: #201f1f;
     padding: 0 2rem;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
-  /* Navbar layout */
-  .navbar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 64px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  }
+/* Navbar layout */
+.navbar-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+height: 64px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
 
-  /* Left: nav links */
-  .navbar-left .navbar-nav {
-    display: flex;
-    gap: 2rem;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+/* Navigation links (left side) */
+.navbar-left .navbar-nav {
+display: flex;
+gap: 2rem;
+list-style: none;
+margin: 0;
+padding: 0;
+}
 
-  /* Nav link */
-  .navbar-nav .nav-link {
-    color: #ffffff;
-    text-decoration: none;
-    margin-top: 5px;
-    font-size: 19px;
-    font-weight: 500;
-    transition: color 0.2s ease-in-out;
-  }
+.navbar-nav .nav-link {
+color: #fff;
+text-decoration: none;
+font-size: 19px;
+font-weight: 500;
+margin-top: 5px;
+transition: color 0.2s ease-in-out;
+}
 
-  .navbar-nav .nav-link:hover {
-    color: #4f4f4f;
-  }
+.navbar-nav .nav-link:hover {
+color: #4f4f4f;
+}
 
-  /* Right: auth buttons */
-  .navbar-right {
-    display: flex;
-    gap: 1rem;
-  }
+/* Auth buttons (right side) */
+.navbar-right {
+display: flex;
+gap: 1rem;
+}
 
-  /* Button base style */
-  .btn {
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 6px;
-    padding: 0.4rem 1.2rem;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.2s ease;
-    text-decoration: none;
-  }
+/* Button base styles */
+.btn {
+font-size: 14px;
+font-weight: 500;
+border-radius: 6px;
+padding: 0.4rem 1.2rem;
+cursor: pointer;
+border: none;
+text-decoration: none;
+transition: background-color 0.2s ease;
+}
 
-  /* Outline variant */
-  .btn-outline-primary {
-    background-color: transparent;
-    color: #ffffff;
-    border: 1px solid #ffffff;
-  }
+/* Outline button */
+.btn-outline-primary {
+background-color: transparent;
+color: #fff;
+border: 1px solid #fff;
+}
 
-  .btn-outline-primary:hover {
-    background-color: rgba(237, 237, 237);
-    border-color: #1c1c1b;
-    color: #1c1c1b;
-  }
+.btn-outline-primary:hover {
+background-color: #ededed;
+border-color: #1c1c1b;
+color: #1c1c1b;
+}
 
-  /* Filled variant */
-  .btn-primary {
-    background-color: #e1e1d8;
-    color: #001f24;
-  }
+/* Filled button */
+.btn-primary {
+background-color: #e1e1d8;
+color: #001f24;
+}
 
-  .btn-primary:hover {
-    background-color: #303030;
-  }
+.btn-primary:hover {
+background-color: #303030;
+}
 
-  /* Responsive stack */
-  /*  */
-
-  /* Mobile adjustments */
+/* You can add responsive styles here as needed */

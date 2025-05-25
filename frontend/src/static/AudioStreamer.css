@@ -1,46 +1,4 @@
-
-.controls-container,
-.transcript-box {
-  max-width: 850px; /* Match the width of .file-container */
-  width: 100%;
-  margin: 0 auto;    /* Center horizontally */
-}
-/* General Layout */
-/* New layout wrapper for Start button + Submit button */
-.recording-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-/* Style Submit Audio Button */
-.submit-audio-button {
-  width: 100%;
-  max-width: 400px;
-  background-color: #111;
-  color: #fff;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 0.5rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-audio-button:hover:not(:disabled) {
-  background-color: #222;
-}
-
-/* Upload input aligned right of circle */
-.upload-box {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* or center if you want it centered */
-  gap: 0.75rem; /* spacing between input and button */
-}
-
+/* === GENERAL LAYOUT === */
 body {
   background-color: #181818;
   color: #fff;
@@ -49,6 +7,22 @@ body {
   padding: 0;
 }
 
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
+  color: #fff;
+}
+
+h6 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #eee;
+}
+
+/* === AUDIO CONTAINER === */
 .audio-container {
   padding: 3rem 2rem;
   max-width: 900px;
@@ -58,16 +32,14 @@ body {
   gap: 0.5rem;
 }
 
-/* Header */
-h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  text-align: center;
-  margin: 0;
-  color: #fff;
+/* === CONTROLS === */
+.controls-container,
+.transcript-box {
+  max-width: 850px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-/* Controls Section */
 .controls-container {
   margin-top: 20px;
   display: flex;
@@ -77,7 +49,14 @@ h2 {
   flex-wrap: wrap;
 }
 
-/* Circular Start/Stop Button */
+.recording-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* === BUTTONS === */
 .circle-button {
   width: 140px;
   height: 140px;
@@ -102,42 +81,28 @@ h2 {
   box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
 }
 
-.language-dropdown-wrapper {
-  min-height: 70px; /* Reserve enough vertical space */
-}
-/* Side Options Panel */
-.side-options {
-  display: fixed;
-  flex-direction: column;
-  gap: 1.5rem;
-  font-size: 0.95rem;
-  min-width: 220px;
-}
-
-.side-options label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Form Inputs */
-select,
-input[type="file"],
-button {
+.submit-audio-button,
+.download-button {
+  width: 100%;
+  max-width: 400px;
   background-color: #111;
   color: #fff;
   border: 1px solid #333;
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
   font-size: 0.9rem;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-select:hover,
-input[type="file"]:hover,
-button:hover:not(:disabled) {
+.download-button {
+  width: 220px;
+}
+
+.submit-audio-button:hover:not(:disabled),
+.download-button:hover:not(:disabled) {
   background-color: #222;
-  border-color: #555;
 }
 
 button:disabled {
@@ -145,7 +110,14 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* File Upload & Action Buttons */
+/* === FILE UPLOAD === */
+.upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
 .file-controls {
   display: flex;
   justify-content: center;
@@ -153,37 +125,28 @@ button:disabled {
   flex-wrap: wrap;
 }
 
-/* Transcript Box */
-.transcript-box {
+.file-container {
+  max-height: 199.2px;
+  width: 100%;
+  padding: 20px;
   background: #111;
-  border-radius: 10px;
-  padding: 1.5rem;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
-  line-height: 1.6;
-  font-size: 1rem;
-  white-space: pre-wrap;
-}
-
-.transcript-box p {
-  margin: 0.5rem 0;
-}
-
-.transcript-box strong {
-  color: #ccc;
+  border-radius: 20px;
+  box-shadow: rgba(255, 255, 255, 0.05) 0px 4px 16px;
+  text-align: center;
+  color: white;
 }
 
 .file {
   height: 100px;
   background-color: #111;
-  color: #fff;
   border: 1px solid #333;
   border-radius: 10px;
   padding: 0 1rem;
   font-size: 0.95rem;
   display: flex;
   align-items: center;
+  color: #fff;
 }
-
 
 input::file-selector-button {
   border: none;
@@ -205,6 +168,26 @@ input::file-selector-button:focus {
   outline: 2px solid #555;
 }
 
+/* === TRANSCRIPT === */
+.transcript-box {
+  background: #111;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  line-height: 1.6;
+  font-size: 1rem;
+  white-space: pre-wrap;
+}
+
+.transcript-box p {
+  margin: 0.5rem 0;
+}
+
+.transcript-box strong {
+  color: #ccc;
+}
+
+/* === CHECKBOXES === */
 .checkbox-group {
   display: flex;
   flex-direction: column;
@@ -215,17 +198,16 @@ input::file-selector-button:focus {
 .checkbox-wrapper {
   position: relative;
   padding-left: 32px;
-  cursor: pointer;
-  user-select: none;
   display: flex;
   align-items: center;
   color: #fff;
+  cursor: pointer;
+  user-select: none;
 }
 
 .checkbox-wrapper input[type="checkbox"] {
   position: absolute;
   opacity: 0;
-  cursor: pointer;
   height: 0;
   width: 0;
 }
@@ -242,13 +224,11 @@ input::file-selector-button:focus {
   transition: all 0.2s ease;
 }
 
-/* Checked state */
 .checkbox-wrapper input:checked ~ .custom-checkbox {
   background-color: #f1f1f1;
   border-color: #f1f1f1;
 }
 
-/* Tick (optional but nice) */
 .custom-checkbox::after {
   content: "";
   position: absolute;
@@ -266,6 +246,7 @@ input::file-selector-button:focus {
   transform: rotate(45deg);
 }
 
+/* === SETTINGS PANEL === */
 .settings-container {
   background-color: #111;
   padding: 1.8rem;
@@ -279,11 +260,12 @@ input::file-selector-button:focus {
   margin-bottom: 0.2rem;
 }
 
+/* === LANGUAGE SELECT === */
 .language-select {
   display: flex;
   flex-direction: column;
-  font-size: 0.95rem;
   gap: 0.5rem;
+  font-size: 0.95rem;
   color: #ccc;
 }
 
@@ -301,94 +283,39 @@ input::file-selector-button:focus {
   background-color: #222;
 }
 
-
-
-/* Responsive Tweaks */
-@media (max-width: 640px) {
-  .controls-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .file-controls {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .side-options {
-    align-items: center;
-    text-align: left;
-  }
+.language-dropdown-wrapper {
+  min-height: 70px;
 }
 
+/* === SIDE OPTIONS PANEL === */
+.side-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-size: 0.95rem;
+  min-width: 220px;
+}
 
-.drag-area {
-  height: 90px;
-  border: 3px dashed #e0eafc;
+.side-options label {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin: 10px auto;
+  gap: 0.5rem;
 }
 
-h6{
-  margin-bottom: 20px;
-  font-weight: 200;
-
-}
-.drag-area .icon{
-  font-size: 50px;
-  color: #333;
-}
-
-.drag-area .header {
-  font-size: 20px;
-  font-weight: 500;
-  color: #444242;
-}
-
-
-.drag-area .support {
-  font-size: 12px;
-  color: gray;
-  margin: 7px 0 5px 0;
-}
-
-.drag-area .button {
-  font-size: 20px;
-  font-weight: 500;
-  color: blue;
-  cursor: pointer;
-}
-
-.file-hidden {
-  display: none;
-}
-
-.file-container {
-  max-height: 199.2px;
-  width: 100%;
-  padding: 20px;
-  background: #111;
-  border-radius: 20px;
-  box-shadow: rgba(255, 255, 255, 0.05) 0px 4px 16px;
-  color: white;
-  text-align: center;
-}
-
+/* === DRAG AREA === */
 .drag-area {
   width: 330px;
   height: 120px;
   border: 2px dashed #3d3d3d;
+  background-color: #1f1f1f;
+  border-radius: 12px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  border-radius: 12px;
-  background-color: #1f1f1f;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin: 10px auto;
 }
 
 .drag-area:hover {
@@ -407,6 +334,12 @@ h6{
   color: #ccc;
 }
 
+.drag-area .support {
+  font-size: 0.7rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
 .drag-area .button {
   font-size: 0.8rem;
   font-weight: 300;
@@ -414,36 +347,11 @@ h6{
   cursor: pointer;
 }
 
-.drag-area .support {
-  font-size: 0.7rem;
-  color: #888;
-  margin-top: 0.5rem;
+.file-hidden {
+  display: none;
 }
 
-h6 {
-  font-size: 1rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-  color: #eee;
-}
-
-.download-button {
-  width: 220px; /* Or any width you prefer */
-  background-color: #111;
-  color: #fff;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 0.5rem 1.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.download-button:hover:not(:disabled) {
-  background-color: #222;
-}
-
+/* === RESPONSIVE === */
 @media (max-width: 900px) {
   .controls-container {
     flex-direction: column;
@@ -454,20 +362,17 @@ h6 {
     order: 1;
     max-width: 370px;
     width: 100%;
-    display: fixed;
     justify-content: center;
   }
 
   .recording-column {
     order: 3;
     width: 100%;
-    display: flex;
     justify-content: center;
   }
 
   .side-options {
     order: 2;
-
     flex-direction: row;
     justify-content: center;
     gap: 1.5rem;
@@ -478,8 +383,20 @@ h6 {
     width: 100%;
   }
 
-  .drag-area{
-
+  .drag-area {
     width: 250px;
+  }
+}
+
+@media (max-width: 640px) {
+  .controls-container,
+  .file-controls,
+  .side-options {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .side-options {
+    text-align: left;
   }
 }
