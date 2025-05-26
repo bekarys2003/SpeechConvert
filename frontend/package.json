@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://bekarys2003.github.io/SpeechConvert",
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.7.0",
@@ -15,6 +16,7 @@
     "@types/react-dom": "^19.1.2",
     "axios": "^1.9.0",
     "css-prefers-color-scheme": "^10.0.0",
+    "gh-pages": "^6.3.0",
     "lucide-react": "^0.511.0",
     "postcss-preset-env": "^10.1.6",
     "react": "^18.2.0",
@@ -29,7 +31,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [

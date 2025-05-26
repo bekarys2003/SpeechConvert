@@ -13,7 +13,7 @@ import AudioStreamer from './components/AudioStreamer';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/SpeechConvert">
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />

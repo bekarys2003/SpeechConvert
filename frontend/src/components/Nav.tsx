@@ -61,7 +61,7 @@ export const Nav = () => {
             <li>
               <Link to="/" className="nav-link">
                 <img
-                  src="/logo.png"
+                  src={`${process.env.PUBLIC_URL}/logo.png`} // ✅ Fix for GitHub Pages
                   alt="SpeechConvert logo"
                   style={{ height: "4vh", marginRight: "8px" }}
                 />
