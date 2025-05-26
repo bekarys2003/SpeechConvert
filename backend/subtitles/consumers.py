@@ -8,16 +8,18 @@ import asyncio
 import traceback
 import subprocess
 import time
-import shutil
+from pathlib import Path
 from channels.generic.websocket import AsyncWebsocketConsumer
 from transformers import pipeline
 from google.cloud import translate_v2 as translate
 from faster_whisper import WhisperModel
 
-if shutil.which("ffmpeg") is None:
-    raise EnvironmentError("FFmpeg is not installed or not found in PATH.")
 
-FFMPEG_PATH = "ffmpeg"
+BASE_DIR = Path(__file__).resolve().parent.parent
+FFMPEG_PATH = str(BASE_DIR / "bin" / "ffmpeg")
+
+if not Path(FFMPEG_PATH).exists():
+    raise EnvironmentError("Bundled FFmpeg binary not found at expected path.")
 
 sentiment_model = pipeline("text-classification", model="bhadresh-savani/distilbert-base-uncased-emotion", top_k=None)
 translator = translate.Client()
