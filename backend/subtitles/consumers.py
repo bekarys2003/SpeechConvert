@@ -23,7 +23,7 @@ if not Path(FFMPEG_PATH).exists():
 
 sentiment_model = pipeline("text-classification", model="bhadresh-savani/distilbert-base-uncased-emotion", top_k=None)
 translator = translate.Client()
-whisper_model = WhisperModel("base", compute_type="auto")
+whisper_model = WhisperModel("tiny", compute_type="int8")
 
 def convert_to_wav(input_path, output_path):
     command = [
