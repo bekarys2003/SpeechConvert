@@ -8,12 +8,16 @@ import asyncio
 import traceback
 import subprocess
 import time
+import shutil
 from channels.generic.websocket import AsyncWebsocketConsumer
 from transformers import pipeline
 from google.cloud import translate_v2 as translate
 from faster_whisper import WhisperModel
 
-FFMPEG_PATH = "/opt/homebrew/bin/ffmpeg"
+if shutil.which("ffmpeg") is None:
+    raise EnvironmentError("FFmpeg is not installed or not found in PATH.")
+
+FFMPEG_PATH = "ffmpeg"
 
 sentiment_model = pipeline("text-classification", model="bhadresh-savani/distilbert-base-uncased-emotion", top_k=None)
 translator = translate.Client()
