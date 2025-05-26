@@ -20,7 +20,7 @@ google-api-python-client==2.126.0
 google-cloud-translate==3.15.4
 
 # AI Models
-transformers==4.40.0
+transformers==4.34.1
 faster-whisper==0.10.0
 torch==2.2.2
 torchaudio==2.2.2
