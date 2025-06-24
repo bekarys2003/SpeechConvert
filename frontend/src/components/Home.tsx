@@ -20,11 +20,11 @@ export const Home = () => {
         />
         <div className="hero-content">
           <h1 className="hero-title">SpeechConvert</h1>
-          <video
+          <img
             className="hero-video"
-            src={`${process.env.PUBLIC_URL}/nature.mp4`}
-            controls
-          ></video>
+            src={`${process.env.PUBLIC_URL}/subs.png`}
+            alt=""
+          ></img>
           <button className="hero-button" onClick={handleClick}>
             Try It Now
           </button>
